@@ -77,13 +77,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
 # Register all blueprints
-app.register_blueprint(upload_bp)
-app.register_blueprint(product_bp)
-app.register_blueprint(blog_bp)
-app.register_blueprint(upload_data_bp)
+app.register_blueprint(upload_bp, url_prefix='/api/news')  # News routes with prefix /api/news
+app.register_blueprint(product_bp, url_prefix='/api/products')  # Product routes with prefix /api/products
+app.register_blueprint(blog_bp, url_prefix='/api/blogs')  # Blog routes with prefix /api/blogs
+app.register_blueprint(upload_data_bp, url_prefix='/api/data')  # Data upload routes with prefix /api/data
 
 # Ensure upload directories exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(BLOGS, exist_ok=True)
 os.makedirs(PRODUCT_UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(UPLOAD_DATA_FOLDER, exist_ok=True)
+
+if __name__ == '__main__':
+    # Create tables in the database
+    with app.app_context():
+        db.create_all()
+
+    app.run(debug=True)
